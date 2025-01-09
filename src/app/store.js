@@ -5,12 +5,8 @@ import employeeReducer from '../features/employee/employeeSlice'
 
 export default configureStore({
   reducer: {
-    counter: counterReducer
-  },
-  reducer:{
-    auth : authReducer
-  },
-  reducer:{
+    counter: counterReducer,
+    auth : authReducer,
     employee: employeeReducer
   }
 

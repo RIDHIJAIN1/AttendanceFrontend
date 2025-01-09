@@ -34,7 +34,7 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     dispatch(signupWithGoogle())
     .then((user)=>{
-      toast.success(`Welcome, ${user.name}`);
+      toast.success(`Welcome to APC Management`);
       navigate('/')
     })
     .catch((error) => { toast.error(error.message);
@@ -80,6 +80,7 @@ const Login = () => {
             Login with Google
           </Button>
         </div>
+        <p className='text-center mt-4'>Don't have an account? <a href='/signup' className='text-blue-500'>Register</a></p>
       </Paper>
     </Container>
   );

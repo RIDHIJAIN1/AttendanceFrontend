@@ -19,8 +19,9 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      await dispatch(signupWithEmail({ email, password, name }));
+      await dispatch(signupWithEmail({ email, password, name })).unwrap();
       toast.success('Signup Successful');
+      navigate("/");
     } catch (error) {
       toast.error(error.message || 'Something went wrong during signup');
     }
@@ -31,7 +32,7 @@ const Signup = () => {
       const user = await dispatch(signupWithGoogle());
       if (user) {
         console.log(user)
-        toast.success(`Welcome, ${user.displayName}`);
+        toast.success(`Welcome to APC Management`);
         navigate('/')
       } else {
         toast.error('User signup failed');

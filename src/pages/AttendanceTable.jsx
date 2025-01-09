@@ -44,7 +44,6 @@ const AttendanceTable = () => {
   
       // Map MongoDB data to the format expected by the component
       const formattedData = employees.map((employee) => {
-        console.log(attendance)
         const attendanceEntry = attendance.find(
           (record) => record.employeeId._id=== employee._id
         );
@@ -56,7 +55,7 @@ const AttendanceTable = () => {
           checkIn: attendanceEntry?.checkIn || "",
           checkOut: attendanceEntry?.checkOut || "",
           totalHours: attendanceEntry?.totalHours || 0,
-          dailyWages: attendanceEntry?.dailyWages || 0,
+          wages: attendanceEntry?.wages || 0,
         };
       });
       console.log(formattedData)
@@ -92,6 +91,7 @@ const AttendanceTable = () => {
     const updatedData = attendanceData.map((entry) =>
       entry.id === id ? { ...entry, ...updatedFields } : entry
     );
+    console.log(updatedData);
     setAttendanceData(updatedData);
 
     const updatedEntry = updatedData.find((entry) => entry.id === id);
@@ -103,7 +103,7 @@ const AttendanceTable = () => {
         checkIn: updatedEntry.checkIn || null,
         checkOut: updatedEntry.checkOut || null,
         totalHours: updatedEntry.totalHours,
-        dailyWages: updatedEntry.dailyWages,
+        wages: updatedEntry.wages,
       };
 
       try {
@@ -158,7 +158,7 @@ const AttendanceTable = () => {
       alert("Please enter a valid positive number for wages.");
       return;
     }
-    updateFieldAndBackend(id, { dailyWages: value });
+    updateFieldAndBackend(id, { wages: value });
   };
 
   return (
@@ -176,10 +176,10 @@ const AttendanceTable = () => {
         <h2 className="text-2xl font-bold">
           Attendance - <span className="font-light">{date.split("T")[0]}</span>
         </h2>
-        <div>Total Records: {filteredAttendance.length}</div>
+        {/* <div>Total Records: {filteredAttendance.length}</div> */}
         <TextField label="Search" variant="outlined" onChange={handleSearch} />
       </div>
-      <TableContainer className="bg-white shadow-md rounded-lg">
+      <TableContainer className=" shadow-md rounded-lg">
         <Table>
           <TableHead>
             <TableRow>
@@ -240,7 +240,7 @@ const AttendanceTable = () => {
                     <TableCell>
                       <TextField
                         className="w-20"
-                        value={entry.dailyWages}
+                        value={entry.wages}
                         onChange={(e) =>
                           handleWagesChange(entry.id, e.target.value)
                         }

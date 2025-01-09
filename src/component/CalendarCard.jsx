@@ -55,20 +55,20 @@ const CalendarCard = () => {
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto bg-white p-4 rounded-lg shadow-md">
+    <div className="w-full max-w-sm mx-auto border-white border-2 p-4 rounded-lg shadow-md">
       <div className="flex justify-between mb-4">
-        <button onClick={handlePreviousMonth} className="text-gray-800">
+        <button onClick={handlePreviousMonth}>
           &lt;
         </button>
         <h2 className="text-xl font-bold">
           {currentMonth.toLocaleString("default", { month: "long" })} {currentMonth.getFullYear()}
         </h2>
-        <button onClick={handleNextMonth} className="text-gray-800">
+        <button onClick={handleNextMonth}>
           &gt;
         </button>
       </div>
       
-      <div className="grid grid-cols-7 gap-1 mb-4 text-center font-bold text-gray-600">
+      <div className="grid grid-cols-7 gap-1 mb-4 text-center font-bold hover:bg-gray-400">
         {daysOfWeek.map((day) => (
           <div key={day}>{day}</div>
         ))}

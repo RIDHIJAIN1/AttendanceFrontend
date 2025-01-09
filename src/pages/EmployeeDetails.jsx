@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
-import { Switch } from "@mui/material";
+import { Switch, TextField, TablePagination } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { getEmployeeData } from "../services/employeeService";
+import EmployeeForm from "./EmployeeForm";
 
 const EmployeeTable = () => {
   const [employeeList, setEmployeeList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust the number of items per page here
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState(0);
+  const [open, setOpen] = useState(false);
 
   const fetchEmployeeDetails = async () => {
     try {
@@ -29,67 +31,85 @@ const EmployeeTable = () => {
     employee.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Get current employees based on pagination
-  const indexOfLastEmployee = currentPage * itemsPerPage;
-  const indexOfFirstEmployee = indexOfLastEmployee - itemsPerPage;
+  // Handle pagination
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  // Get current employees for the current page
   const currentEmployees = filteredEmployees.slice(
-    indexOfFirstEmployee,
-    indexOfLastEmployee
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
   );
 
-  // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  function toTitleCase(str) {
+    return str.replace(/\b\w/g, char => char.toUpperCase());
+  }
+
+  const handleClose = () => {
+    setOpen(false);
+    fetchEmployeeDetails();
+  };
 
   return (
     <div className="min-h-screen w-11/12 mx-auto">
-      <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="flex p-4 border-b bg-gray-50">
-          <h2 className="text-2xl font-semibold text-gray-800">
-            Employee Table
-          </h2>
-          <AddCircleIcon
-            style={{
-              fontSize: "30px",
-              marginBottom: "10px",
-              marginLeft: "10px",
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Search by name"
-            className="ml-auto p-2 border rounded"
+      <div className="max-w-7xl mx-auto rounded-lg shadow-lg overflow-hidden">
+        <div className="flex p-4 border-b justify-between">
+          <div className="flex mt-2">
+            <h2 className="text-2xl font-semibold">Employee Table</h2>
+            <AddCircleIcon
+              style={{
+                fontSize: "30px",
+                marginBottom: "10px",
+                marginLeft: "10px",
+              }}
+              onClick={handleOpen}
+            />
+          </div>
+          <EmployeeForm open={open} handleClose={handleClose} />
+          <TextField
+            label="Search"
+            variant="outlined"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+        <div className="overflow-x-auto max-w-full">
         <table className="w-full border-collapse text-left">
-          <thead className="bg-gray-200">
+          <thead>
             <tr>
-              <th className="p-4 text-sm font-medium text-gray-600">#</th>
-              <th className="p-4 text-sm font-medium text-gray-600">Name</th>
-              <th className="p-4 text-sm font-medium text-gray-600">
-                Designation
-              </th>
-              <th className="p-4 text-sm font-medium text-gray-600">Contact</th>
-              <th className="p-4 text-sm font-medium text-gray-600">Active</th>
-              <th className="p-4 text-sm font-medium text-gray-600">
-                More Details
-              </th>
+              <th className="p-4 text-sm font-medium">#</th>
+              <th className="p-4 text-sm font-medium">Name</th>
+              <th className="p-4 text-sm font-medium">Designation</th>
+              <th className="p-4 text-sm font-medium">Contact</th>
+              <th className="p-4 text-sm font-medium">Active</th>
+              <th className="p-4 text-sm font-medium">More Details</th>
             </tr>
           </thead>
           <tbody>
             {currentEmployees.length > 0 ? (
               currentEmployees.map((employee, index) => (
-                <tr key={employee.id} className="border-b hover:bg-gray-50">
-                  <td className="p-4 text-gray-800">{index + 1 + indexOfFirstEmployee}</td>
+                <tr key={employee.id} className="border-b hover:bg-gray-400">
+                  <td className="p-4">
+                    {index + 1 + page * rowsPerPage}
+                  </td>
                   <td className="p-4 flex items-center space-x-3">
                     <Avatar sx={{ width: 32, height: 32 }}>
-                      {employee.name[0]}
+                      {toTitleCase(employee.name[0])}
                     </Avatar>
-                    <span className="text-gray-800">{employee.name}</span>
+                    <span>{toTitleCase (employee.name)}</span>
                   </td>
-                  <td className="p-4 text-gray-800">{employee.designation}</td>
-                  <td className="p-4 text-gray-800">{employee.contact}</td>
+                  <td className="p-4">{toTitleCase(employee.designation)}</td>
+                  <td className="p-4">{employee.contact}</td>
                   <td className="p-4">
                     <Switch checked={employee.isActive} color="primary" />
                   </td>
@@ -115,18 +135,17 @@ const EmployeeTable = () => {
             )}
           </tbody>
         </table>
-        {/* Pagination */}
-        <div className="flex justify-center mt-4">
-          {Array.from({ length: Math.ceil(filteredEmployees.length / itemsPerPage) }, (_, index) => (
-            <button
-              key={index + 1}
-              onClick={() => paginate(index + 1)}
-              className={`mx-1 px-3 py-1 rounded ${currentPage === index + 1 ? "bg-blue-500 text-white" : "bg-gray-200"}`}
-            >
-              {index + 1}
-            </button>
-          ))}
         </div>
+        {/* Material UI Pagination */}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredEmployees.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </div>
     </div>
   );

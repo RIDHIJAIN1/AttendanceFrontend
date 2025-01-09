@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 const EditEmployeeModal = ({ employee, onSave, onClose }) => {
   const { employeeId } = useParams();
-  const [editedEmployee, setEditedEmployee] = useState(employee);
+  const [editedEmployee, setEditedEmployee] = useState(employee || {});
   const [identityCard , setIdentityCard] = useState(null);
   const [loading , setLoading] = useState(false);
 
@@ -20,10 +20,10 @@ const handleFileChange = (e) => {
 }
 
   const handleSave = async() => {
-
     setLoading(true);
     try{
-      const updatedEmployee = {...editedEmployee , identityCard};
+      const updatedEmployee = {...editedEmployee ,identityCard };
+      console.log(updatedEmployee)
       const response = await updateEmployeeDataById(employeeId , updatedEmployee);
       toast.success("Employee Updated Successfully");
       onSave(response.data)
@@ -33,9 +33,7 @@ const handleFileChange = (e) => {
      console.error("Error updating employee Data ", error)
      toast.error("Error updating employee Data")
     }finally{
-      setLoading(false);
-    }
-    
+      setLoading(false)   }   
   };
 
   return (
@@ -111,7 +109,7 @@ const handleFileChange = (e) => {
           fullWidth
           label="Active"
           value={editedEmployee.isActive}
-          onChange={(e) => handleChange("isActive", e.target.value)}
+          onChange={(e) => handleChange("isActive", e.target.value==="true")}
         />
       </div>
       <div className="mt-4 flex justify-end space-x-3">

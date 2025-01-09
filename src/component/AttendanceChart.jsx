@@ -41,7 +41,7 @@ const AttendanceChart = () => {
   };
 
   return (
-    <div className=" space-y-6 bg-white rounded-lg shadow-md">
+    <div className=" space-y-6 border-2 border-white p-2 rounded-lg shadow-md">
       {/* Bar chart (Departments) */}
       <div className="w-full h-full">
        

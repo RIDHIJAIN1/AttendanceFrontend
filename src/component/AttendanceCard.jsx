@@ -24,7 +24,7 @@ const AttendanceCard = () => {
 const formattedTime = currentTime.toLocaleTimeString();
 
   return (
-    <div className="bg-white p-6 shadow-lg rounded-lg flex flex-col items-center ">
+    <div className="border-white border-2 p-6 shadow-lg rounded-lg flex flex-col items-center ">
       <h2 className="text-xl font-bold mb-4">Date & Time</h2>
       <div className="relative w-24 h-24">
         <CircularProgress
@@ -42,7 +42,7 @@ const formattedTime = currentTime.toLocaleTimeString();
       </div>
       <div className=" w-full mt-4">
         <div className="text-center">
-          <p className="text-sm text-gray-500">Time</p>
+          <p className="text-sm">Time</p>
           <p className="text-lg font-semibold">{formattedTime}</p>
         </div>
    

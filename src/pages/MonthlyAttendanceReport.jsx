@@ -8,6 +8,7 @@ import { getMonthlyAttendance } from "../services/attendanceService";
 const MonthlyAttendanceReport = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [attendanceData, setAttendanceData] = useState([]);
+  const [employeeData , setEmployeeData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -30,33 +31,26 @@ const MonthlyAttendanceReport = () => {
   
       const attendanceRecords = attendanceData.attendance;
   
-      const formattedData = attendanceRecords.map((record) => {
+      // Map attendance data with all employees
+      const formattedData = employeeData.map((employee) => {
         const employeeAttendance = {};
-        const { attendance, employeeId, name } = record;
+        const attendanceRecord = attendanceRecords.find(
+          (record) => record.employeeId === employee._id
+        );
   
-        // Map attendance dates and presence
-        if (attendance && typeof attendance === "object") {
-          Object.entries(attendance).forEach(([dateKey, isPresent]) => {
-            try {
-              const recordDate = new Date(dateKey);
-              if (isNaN(recordDate.getTime())) {
-                throw new Error("Invalid date format");
-              }
-              const formattedDate = recordDate.toISOString().split("T")[0];
-              employeeAttendance[formattedDate] = isPresent;
-            } catch (error) {
-              console.error(
-                "Invalid date record:",
-                { employeeId, date: dateKey },
-                error.message
-              );
-            }
+        // Populate attendance if record exists
+        if (attendanceRecord && attendanceRecord.dailyRecords) {
+          Object.entries(attendanceRecord.dailyRecords).forEach(([dateKey, record]) => {
+            employeeAttendance[dateKey] = {
+              isPresent: record.isPresent,
+              wages: record.wages || 0, // Include wages for each date
+            };
           });
         }
   
         return {
-          id: employeeId,
-          name,
+          id: employee._id,
+          name: employee.name,
           attendance: employeeAttendance,
         };
       });
@@ -69,6 +63,8 @@ const MonthlyAttendanceReport = () => {
       setLoading(false);
     }
   };
+  
+  
   
   
   
@@ -91,7 +87,7 @@ const MonthlyAttendanceReport = () => {
   const monthYear = currentDate.toLocaleString("default", { month: "long", year: "numeric" });
 
   return (
-    <div className="p-6 bg-gray-100 rounded-lg shadow-md ml-auto">
+    <div className="p-6 rounded-lg shadow-md ml-auto">
       <div className="flex justify-between items-center mb-4">
         <IconButton onClick={handlePrevMonth}>
           <ArrowBack />
@@ -102,52 +98,57 @@ const MonthlyAttendanceReport = () => {
         </IconButton>
       </div>
       <div className="overflow-auto">
-        <table className="w-11/12 border-collapse border border-gray-300 text-center">
+        <table className="w-11/12 border-collapse border text-center">
           <thead>
             <tr>
-              <th className="sticky top-0 bg-gray-200 border px-4 py-2">Employee</th>
+              <th className="sticky top-0  border px-4 py-2">Employee</th>
               {daysInMonth.map((day) => (
-                <th key={day} className="sticky top-0 bg-gray-200 border px-4 py-2">
+                <th key={day} className="sticky top-0  border px-4 py-2">
                   {day}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {attendanceData.length > 0 ? (
-              attendanceData.map((employee) => (
-                <tr key={employee.id}>
-                  <td className="border px-4 py-2 font-medium bg-white">{employee.name}</td>
-                  {daysInMonth.map((day) => {
-                    const dateKey = `${currentDate.getFullYear()}-${String(
-                      currentDate.getMonth() + 1
-                    ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-                    const isPresent = employee.attendance[dateKey];
-                    return (
-                      <td
-                        key={day}
-                        className={`border px-2 py-1 ${
-                          isPresent === undefined
-                            ? "bg-gray-100"
-                            : isPresent
-                            ? "bg-green-200 text-center"
-                            : "bg-red-200 text-center"
-                        }`}
-                      >
-                        {isPresent === undefined ? "❌" : isPresent ? "✔️" : "❌"}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={daysInMonth.length + 1} className="text-center py-4">
-                  No data available for this month.
-                </td>
-              </tr>
-            )}
-          </tbody>
+  {attendanceData.length > 0 ? (
+    attendanceData.map((employee) => (
+      <tr key={employee.id}>
+        <td className="border px-4 py-2 font-medium">{employee.name}</td>
+        {daysInMonth.map((day) => {
+          const dateKey = `${currentDate.getFullYear()}-${String(
+            currentDate.getMonth() + 1
+          ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+          const attendanceRecord = employee.attendance[dateKey];
+          const isPresent = attendanceRecord?.isPresent;
+          const wages = attendanceRecord?.wages || 0;
+
+          return (
+            <td
+              key={day}
+              className={`border px-2 py-1 ${
+                isPresent === undefined
+                  ? "bg-none"
+                  : isPresent
+                  ? "bg-green-200 text-center text-black"
+                  : "bg-red-200 text-center"
+              }`}
+            >
+              {isPresent === undefined ? "❌" : isPresent ? "✔️" : "❌"}
+              <p className="mt-1 text-sm font-semibold">{wages}</p>
+            </td>
+          );
+        })}
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan={daysInMonth.length + 1} className="text-center py-4">
+        No data available for this month.
+      </td>
+    </tr>
+  )}
+</tbody>
+
         </table>
       </div>
     </div>

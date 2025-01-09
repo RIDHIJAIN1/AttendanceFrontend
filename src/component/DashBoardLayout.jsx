@@ -8,7 +8,6 @@ import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { useDemoRouter } from '@toolpad/core/internal';
 import { CheckBox, Payment, People, Person } from '@mui/icons-material';
 import Home from '../pages/Home';
-import EmployeeForm from '../pages/EmployeeForm';
 import EmployeeDetails from '../pages/EmployeeDetails';
 import AttendanceTable from '../pages/AttendanceTable';
 import Payroll from '../pages/PayrollData';
@@ -19,11 +18,9 @@ import MonthlyAttendanceReport from '../pages/MonthlyAttendanceReport';
 
 const NAVIGATION = [
   { segment: 'dashboard', title: 'Dashboard', icon: <DashboardIcon /> },
-  { segment: 'add', title: 'Add Employee', icon: <Person /> },
+  { segment: 'employeedetails', title: 'Employee Details', icon: <People /> },
   { segment: 'attendance', title: 'Mark Attendance', icon: <CheckBox /> },
   { segment: 'payroll', title: 'Payroll', icon: <Payment /> },
- 
-  { segment: 'employeedetails', title: 'Employee Details', icon: <People /> },
   { segment: 'monthlyattendance', title: 'Monthly Attendance', icon: <Payment /> },
 ];
 
@@ -43,15 +40,14 @@ const demoTheme = createTheme({
   },
 });
 
+
+
 function DemoPageContent({ pathname }) {
   let content;
   switch (pathname) {
     case '/dashboard':
       content = <Home />;
-      break;
-    case '/add':
-      content = <EmployeeForm />;
-      break;
+      break; 
     case '/attendance':
       content = <AttendanceTable />;
       break;
@@ -139,9 +135,17 @@ function DashboardLayoutAccount(props) {
       router={router}
       theme={demoTheme}
       window={demoWindow}
+       title="AshokaTracker"
     >
       <Box sx={{ m: 0, p: 0, width: '100%', mx: 'auto' }}>
-        <DashboardLayout sx={{ m: 0, p: 0 }}>
+        <DashboardLayout   sx={{
+    '& .MuiTypography-root MuiTypography-h6 css-14tatqh-MuiTypography-root': {
+      content: '"AshokaTracker"',
+      fontSize: '1.5rem',
+      fontWeight: 'bold',
+      color: '#000', // Optional customization
+    },
+  }} >
           <DemoPageContent pathname={router.pathname} />
         </DashboardLayout>
       </Box>
