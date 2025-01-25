@@ -219,22 +219,26 @@ const Payroll = () => {
               </th>
 
               <th className="p-4 text-sm font-medium">
-                Total Amt
+                 Amt To Be Paid
               </th>
               {/* Total amt will be calculated by multiplying total hrs into hourly rate */}
               <th className="p-4 text-sm font-medium">
-                Wages Paid
+                Already Paid
               </th>
 
-              <th className="p-4 text-sm font-medium">
+              {/* <th className="p-4 text-sm font-medium">
                 Current Month Total
+              </th> */}
+              <th className="p-4 text-sm font-medium">
+                {" "}
+                Current Payment
               </th>
               <th className="p-4 text-sm font-medium">
                 {" "}
-                Total Paid
+                Amount Paid
               </th>
               <th className="p-4 text-sm font-medium">
-                Remaining Amt
+                Debit/Credit
               </th>
 
               {/* <th className="p-4 text-sm font-medium">Net Pay</th> */}
@@ -255,9 +259,9 @@ const Payroll = () => {
                 <td className="p-4 ">{employee.hourlyRate}</td>
                 <td className="p-4 ">{employee.totalAmt}</td>
                 <td className="p-4 ">{employee.wages}</td>
-                <td className="p-4 ">
+                {/* <td className="p-4 ">
                   {employee.currentMonthTotal}
-                </td>
+                </td> */}
                 <td className="p-4 ">
                   <input
                     type="number"
@@ -269,12 +273,13 @@ const Payroll = () => {
                     className="border rounded px-2 py-1 w-20"
                   />
                 </td>
+                <td className="p-4 ">{(employee.wages)+ (employee.currentMonthPayment)}</td>
                 <td
   className={`p-4 ${
-    employee.remainingAmt < 0 ? "text-green-500" : "text-red-500"
+    employee.remainingAmt > 0 ? "text-red-500" : "text-green-500"
   }`}
 >
-  {Math.abs(employee.remainingAmt)}
+  {Math.abs(employee.remainingAmt) + (employee.remainingAmt == 0 ? "" : employee.remainingAmt > 0 ? " Remaining" : " Extra")}
 </td>
 
 

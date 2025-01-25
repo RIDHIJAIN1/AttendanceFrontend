@@ -30,10 +30,10 @@ const CalendarCard = () => {
       const month = currentMonth.getMonth(); // Zero-indexed
   
       // Create a date in UTC
-      const selectedDate = new Date(Date.UTC(year, month, day, 0, 0, 0));
-      const formattedDate = selectedDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
-      console.log(formattedDate); // Debugging line
-      navigate(`/attendance?date=${formattedDate}`); // Navigate to AttendanceTable with date
+      const selectedDate = new Date(Date.UTC(year, month, day)).toISOString().split("T")[0]
+      // const formattedDate = selectedDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+      // console.log(formattedDate); // Debugging line
+      window.location.href = `/attendance?date=${selectedDate}`; // Navigate to AttendanceTable with date
     }
   };
 
@@ -55,7 +55,7 @@ const CalendarCard = () => {
   };
 
   return (
-    <div className="w-full max-w-sm mx-auto border-white border-2 p-4 rounded-lg shadow-md">
+    <div className="w-full mx-auto border-white border-2 p-8 rounded-lg shadow-md">
       <div className="flex justify-between mb-4">
         <button onClick={handlePreviousMonth}>
           &lt;
@@ -74,7 +74,7 @@ const CalendarCard = () => {
         ))}
       </div>
       
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 gap-1 text-center">
         {renderCalendarCardDays()}
       </div>
     </div>

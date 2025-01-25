@@ -4,6 +4,7 @@ import { IconButton } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import { getEmployeeData } from "../services/employeeService";
 import { getMonthlyAttendance } from "../services/attendanceService";
+import { useNavigate } from "react-router-dom";
 
 const MonthlyAttendanceReport = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -11,6 +12,7 @@ const MonthlyAttendanceReport = () => {
   const [employeeData , setEmployeeData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   // Fetch employee and attendance data on component mount
   useEffect(() => {
@@ -64,7 +66,19 @@ const MonthlyAttendanceReport = () => {
     }
   };
   
+  const handleDayClick = (day) => {
+    if (day) {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth(); // Zero-indexed
   
+      // Create a date in UTC
+      const selectedDate = new Date(Date.UTC(year, month, day, 0, 0, 0));
+      const formattedDate = selectedDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+      console.log(formattedDate); // Debugging line
+      navigate(`/attendance?date=${formattedDate}`); // Navigate to AttendanceTable with date
+    }
+  };
+
   
   
   
@@ -103,7 +117,7 @@ const MonthlyAttendanceReport = () => {
             <tr>
               <th className="sticky top-0  border px-4 py-2">Employee</th>
               {daysInMonth.map((day) => (
-                <th key={day} className="sticky top-0  border px-4 py-2">
+                <th key={day} className="sticky top-0  border px-4 py-2"onClick={() => handleDayClick(day)}>
                   {day}
                 </th>
               ))}
@@ -125,13 +139,13 @@ const MonthlyAttendanceReport = () => {
           return (
             <td
               key={day}
-              className={`border px-2 py-1 ${
+              className={`border px-2 py-1 cursor-pointer ${
                 isPresent === undefined
                   ? "bg-none"
                   : isPresent
                   ? "bg-green-200 text-center text-black"
                   : "bg-red-200 text-center"
-              }`}
+              }`}onClick={() => handleDayClick(day)}
             >
               {isPresent === undefined ? "❌" : isPresent ? "✔️" : "❌"}
               <p className="mt-1 text-sm font-semibold">{wages}</p>

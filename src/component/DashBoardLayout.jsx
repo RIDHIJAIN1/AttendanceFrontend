@@ -11,10 +11,11 @@ import Home from '../pages/Home';
 import EmployeeDetails from '../pages/EmployeeDetails';
 import AttendanceTable from '../pages/AttendanceTable';
 import Payroll from '../pages/PayrollData';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
 import MonthlyAttendanceReport from '../pages/MonthlyAttendanceReport';
+import EmployeeData from '../pages/EmployeeData';
 
 const NAVIGATION = [
   { segment: 'dashboard', title: 'Dashboard', icon: <DashboardIcon /> },
@@ -43,13 +44,19 @@ const demoTheme = createTheme({
 
 
 function DemoPageContent({ pathname }) {
+  const location = useLocation();
+  const { employeeId } = useParams();
+
+  const queryParams = new URLSearchParams(location.search);
+  const date = queryParams.get("date");
+    
   let content;
   switch (pathname) {
     case '/dashboard':
       content = <Home />;
       break; 
     case '/attendance':
-      content = <AttendanceTable />;
+      content = <AttendanceTable selectedDate= {date}/>;
       break;
     case '/payroll':
       content = <Payroll />;
@@ -59,6 +66,9 @@ function DemoPageContent({ pathname }) {
       break;
     case '/monthlyattendance':
       content = <MonthlyAttendanceReport />;
+      break;
+    case `/employee/${employeeId}`:
+      content = <EmployeeData employeeId={employeeId} />;
       break;
     default:
       content = <Home />;
@@ -136,6 +146,11 @@ function DashboardLayoutAccount(props) {
       theme={demoTheme}
       window={demoWindow}
        title="AshokaTracker"
+       branding={{
+        logo: <img src="https://mui.com/static/logo.png" alt="AshokaTracker logo" />,
+        title: 'AshokaTracker',
+        homeUrl: '/',
+      }}
     >
       <Box sx={{ m: 0, p: 0, width: '100%', mx: 'auto' }}>
         <DashboardLayout   sx={{

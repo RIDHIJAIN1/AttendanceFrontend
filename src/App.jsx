@@ -29,11 +29,14 @@ function App() {
     <Provider store={store}>
       <Router>
         <Routes>
-          <Route path="/attendance" element={<AttendanceTable />} />
+      
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/" />} />
           <Route path="/" element={isAuthenticated ? <DashboardLayoutAccount /> : <Navigate to="/login" />} />
-          <Route path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
+          <Route path="/" element= {<Home/>}/>
+              <Route path="/attendance" element={<AttendanceTable />} />
+          <Route/>
+        
           <Route path="*" element={<NotFoundPage />} />
           <Route path="employee/:employeeId" element={<EmployeeData />} />
         </Routes>

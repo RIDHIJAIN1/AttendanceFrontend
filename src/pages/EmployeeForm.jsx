@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import { TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -19,6 +19,7 @@ const EmployeeForm = ({ open, handleClose }) => {
     address: "",
     hourlyRate: "",
     join_date: null,
+    firm: "", // Added firm field
   });
 
   const toTitleCase = (str) => {
@@ -50,7 +51,7 @@ const EmployeeForm = ({ open, handleClose }) => {
 
   const validateForm = () => {
     const contactPattern = /^\d{10}$/;
-    if (!employeeData.name || !employeeData.designation || !employeeData.join_date) {
+    if (!employeeData.name || !employeeData.designation || !employeeData.join_date || !employeeData.firm) {
       toast.error("Please fill in all the required fields");
       return false;
     }
@@ -80,6 +81,7 @@ const EmployeeForm = ({ open, handleClose }) => {
         address: "",
         hourlyRate: "",
         join_date: null,
+        firm: "", // Reset firm field
       });
       handleClose(); // Close the modal after submission
     } catch (error) {
@@ -120,7 +122,7 @@ const EmployeeForm = ({ open, handleClose }) => {
               fullWidth
               type="tel"
             />
-              <TextField
+            <TextField
               label="Hourly Rate ($)"
               name="hourlyRate"
               value={employeeData.hourlyRate}
@@ -128,7 +130,6 @@ const EmployeeForm = ({ open, handleClose }) => {
               fullWidth
               type="number"
             />
-            
             <TextField
               label="Address"
               name="address"
@@ -138,8 +139,23 @@ const EmployeeForm = ({ open, handleClose }) => {
               multiline
               rows={3}
             />
-          
-          <div className="text-left">
+
+            {/* Firm Select Field */}
+            <FormControl fullWidth required>
+              <InputLabel>Firm</InputLabel>
+              <Select
+                name="firm"
+                value={employeeData.firm}
+                onChange={handleChange}
+                label="Firm"
+              >
+                <MenuItem value="Ashoka Paper Converts">Ashoka Paper Converts</MenuItem>
+                <MenuItem value="Shree Nakoda Manufacturers">Shree Nakoda Manufacturers</MenuItem>
+                <MenuItem value="Ridhi Enterprises">Ridhi Enterprises</MenuItem>
+              </Select>
+            </FormControl>
+
+            <div className="text-left">
               <p>Identity Card</p>
               <input
                 type="file"

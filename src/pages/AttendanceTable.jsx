@@ -13,7 +13,8 @@ import {
 import { getEmployeeData } from "../services/employeeService";
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import { getAttendance, updateAttendance } from "../services/attendanceService";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import CalendarCard from "../component/CalendarCard";
 
 const AttendanceTable = () => {
   const [attendanceData, setAttendanceData] = useState([]);
@@ -21,16 +22,23 @@ const AttendanceTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState(null);
-  const [date, setDate] = useState(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const dateParam = searchParams.get("date");
-    return dateParam ? new Date(dateParam).toISOString() : new Date().toISOString();
-  });
-
+  const [isModelOpen , setIsModelOpen] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
+
+    // Extract date from URL query
+    const searchParams = new URLSearchParams(location.search);
+    const dateParam = searchParams.get("date");
+    const [date, setDate] = useState(dateParam || new Date().toISOString().split("T")[0]);
+
+
 
   const handleClick=()=>{
     navigate(-1);
+  }
+
+  const toggleModal = ()=>{
+    setIsModelOpen(!isModelOpen);
   }
 
   const fetchEmployeeDetails = async () => {
@@ -68,6 +76,8 @@ const AttendanceTable = () => {
   
   useEffect(() => {
     fetchEmployeeDetails();
+    console.log("This is selected date");
+    console.log(date);
   }, [date]);
 
   const handleSearch = (event) => setSearchTerm(event.target.value.toLowerCase());
@@ -174,8 +184,28 @@ const AttendanceTable = () => {
       <div className="flex justify-between mb-4">
      
         <h2 className="text-2xl font-bold">
-          Attendance - <span className="font-light">{date.split("T")[0]}</span>
+          Attendance -  <span
+            className="font-light underline cursor-pointer"onClick={toggleModal}
+            // onClick={handleDateClick}
+          >
+            {date.split("T")[0]}
+          </span>
         </h2>
+
+        {isModelOpen && (
+
+<div className="fixed inset-0  flex justify-center items-center">
+<div className="bg-blue-300 rounded-lg p-4 relative">
+  <button
+    className="absolute top-0 right-1 text-lg font-bold"
+    onClick={toggleModal} // Close modal
+  >
+    &times;
+  </button>
+  <CalendarCard />
+</div>
+</div>
+        )}
         {/* <div>Total Records: {filteredAttendance.length}</div> */}
         <TextField label="Search" variant="outlined" onChange={handleSearch} />
       </div>
@@ -205,6 +235,7 @@ const AttendanceTable = () => {
                         checked={entry.isPresent}
                         onChange={() => toggleAttendanceType(entry.id)}
                         color="primary"
+                        className="relative"
                       />
                       {entry.isPresent ? "Present" : "Absent"}
                     </TableCell>
