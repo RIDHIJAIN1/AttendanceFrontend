@@ -149,19 +149,22 @@ const AttendanceTable = () => {
     if (updatedEntry.checkIn && updatedEntry.checkOut) {
       const checkInTime = new Date(`1970-01-01T${updatedEntry.checkIn}:00`);
       const checkOutTime = new Date(`1970-01-01T${updatedEntry.checkOut}:00`);
-      const diff = (checkOutTime - checkInTime) / (1000 * 60 * 60);
+      const diffInMinutes = (checkOutTime - checkInTime) / (1000 * 60);
 
-      if (diff <= 0) {
-        alert("Check-out time must be after Check-in time.");
-        updatedEntry.checkIn = "";
-        updatedEntry.checkOut = "";
-      } else {
-        updatedEntry.totalHours = diff;
-      }
+    if (diffInMinutes <= 0) {
+      alert("Check-out time must be after Check-in time.");
+   
+      updatedEntry.checkOut = "";
+    } else {
+      const hours = Math.floor(diffInMinutes / 60);
+      const minutes = diffInMinutes % 60;
+      updatedEntry.totalHours = `${hours}h ${minutes}m`; // Format: "5h 30m"
     }
+  }
 
-    updateFieldAndBackend(id, updatedEntry);
-  };
+  updateFieldAndBackend(id, updatedEntry);
+};
+   
 
   const handleWagesChange = (id, value) => {
     if (isNaN(value) || value < 0) {

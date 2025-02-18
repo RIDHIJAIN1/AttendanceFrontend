@@ -1,10 +1,11 @@
 // Signup.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch , useSelector } from 'react-redux';
-import { signupWithEmail , signupWithGoogle } from '../features/auth/authSlice';
+import { signupWithEmail  } from '../features/auth/authSlice';
 import { TextField, Button, Typography, Container, Paper } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import GoogleLogin from '../component/GoogleLogin';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -14,33 +15,42 @@ const Signup = () => {
  const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const auth = useSelector((state)=>state.auth);
+  const { status } = useSelector((state) => state.auth);
 
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
       await dispatch(signupWithEmail({ email, password, name })).unwrap();
       toast.success('Signup Successful');
-      navigate("/");
+      navigate('/dashboard');
     } catch (error) {
       toast.error(error.message || 'Something went wrong during signup');
     }
   };
+//   const handleGoogleLogin = () => {
+//     window.location.href = 'http://localhost:3000/auth/google';
+// };
 
-  const handleGoogleSignup = async () => {
-    try {
-      const user = await dispatch(signupWithGoogle());
-      if (user) {
-        console.log(user)
-        toast.success(`Welcome to APC Management`);
-        navigate('/')
-      } else {
-        toast.error('User signup failed');
-      }
-    } catch (error) {
-      toast.error(error.message || 'Something went wrong with Google Signup');
-    }
-  };
+// useEffect(()=>{
+//   const params = new URLSearchParams(window.location.search);
+//   const authToken = params.get("token");
+//   const navigate = useNavigate();
+
+//   if (authToken) {
+//     // Store token in localStorage
+//     localStorage.setItem("token", authToken);
+//     setToken(authToken);
+
+
+//     // Remove token from URL (for cleaner UI)
+//     window.history.replaceState({}, document.title, window.location.pathname);
+//     navigate('/dashboard'); 
+// }else{
+//   navigate('/login'); 
+// }
+
+// },[])
+
 
   return (
     <Container maxWidth="xs" className="flex justify-center items-center min-h-screen">
@@ -79,15 +89,28 @@ const Signup = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <Button type="submit" variant="contained" color="primary" fullWidth className="mt-4">
-            Sign Up
+         <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            className="mt-4"
+            disabled={status === 'loading'}
+          >
+            {status === 'loading' ? 'Signing Up...' : 'Sign Up'}
           </Button>
         </form>
         <div className="flex justify-center mt-4">
-          <Button variant="outlined" onClick={handleGoogleSignup} className="w-full">
-            Sign Up with Google
-          </Button>
+        {/* <button onClick={handleGoogleLogin} className="bg-red-500 text-white px-4 py-2 rounded">
+            Login with Google
+        </button> */}
         </div>
+        <p className="text-center mt-4">
+          Already have an account?{' '}
+          <a href="/login" className="text-blue-500">
+            Login
+          </a>
+        </p>
       </Paper>
     </Container>
   );

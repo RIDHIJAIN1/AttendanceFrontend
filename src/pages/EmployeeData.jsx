@@ -8,6 +8,7 @@ import EditEmployeeModal from "../component/EditEmployeeModal";
 import DeleteEmployeeModal from "../component/DeleteEmployeeModal";
 import { APP_URL } from "../config/config";
 import { capitalize } from "lodash";
+import { ArrowLeftIcon } from "@mui/x-date-pickers";
 
 
 const EmployeeData = () => {
@@ -22,6 +23,7 @@ const navigate = useNavigate();
   const fetchEmployeeById = async () => {
     try {
       const fetchedEmployee = await getEmployeeDataById(employeeId);
+      
       setEmployeeList([fetchedEmployee]); // Add the fetched employee to the list
     } catch (error) {
       console.error("Failed to fetch employee data:", error);
@@ -70,7 +72,17 @@ const navigate = useNavigate();
 
   return (
     <div className="p-6  min-h-screen">
-          <p className="m-4 cursor-pointer" onClick={getBack}>Back</p>
+       
+
+      <div className="flex m-0 p-0 cursor-pointer "onClick={getBack}>
+        <div >
+      <ArrowLeftIcon className="p-0 m-0"/>
+      </div>
+      <div className="m-0">
+       Back
+       </div>
+      </div>
+         
       <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
     
         <div className="p-4 border-b bg-gray-50">

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Switch, TablePagination, TextField } from "@mui/material";
+import { Button, Switch, TablePagination, TextField } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import { IconButton } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
@@ -242,6 +242,7 @@ const Payroll = () => {
               </th>
 
               {/* <th className="p-4 text-sm font-medium">Net Pay</th> */}
+              {/* <th className="p-4 text-sm font-medium">Payment</th> */}
               <th className="p-4 text-sm font-medium">Paid</th>
             </tr>
           </thead>
@@ -281,7 +282,10 @@ const Payroll = () => {
 >
   {Math.abs(employee.remainingAmt) + (employee.remainingAmt == 0 ? "" : employee.remainingAmt > 0 ? " Remaining" : " Extra")}
 </td>
-
+{/* <td className="p-4">
+                <Button variant="contained" color="primary" >PAY</Button>
+                  
+                </td> */}
 
                 <td className="p-4">
                   <Switch
@@ -290,6 +294,7 @@ const Payroll = () => {
                     color="primary"
                   />
                 </td>
+               
               </tr>
             ))}
           </tbody>
